@@ -1,0 +1,5 @@
+bk_analyze.sh
+data/**
+output/**
+syslog.gz
+node_modules/**
