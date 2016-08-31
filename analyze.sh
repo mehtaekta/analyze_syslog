@@ -1,8 +1,11 @@
 #!/usr/local/bin/bash 
-declare -A cpidArr
 # | sed 's/\"//g' 
-gunzip -c syslog.gz | grep 'cm-accept tracking' | sed 's/^[^{]*{\([^{}]*\)}.*/\1/' | awk -F'[:,]' '{print $4 "|" $2}' | while read line
-do
+gunzip -c data/syslog.gz | grep 'cm-accept tracking' | sed 's/^[^{]*{\([^{}]*\)}.*/\1/' | awk -F'[:,]' '{print $4 "|" $2}' | {
+  declare -A cpidArr
+  declare -A cpidUAArr
+  
+  while read line
+  do
     # echo $line
     IFS='|' read -r cpid action <<< "$line"
     # echo $cpid
@@ -11,14 +14,25 @@ do
     
     re='^[0-9]+$'
     if [[ $cpid =~ $re ]] ; then
-    #   echo $cpid
-      cpidArr[$cpid]=$action
+      
+      # action does not contain UAString
+      if [[ ${action} != *"UAString"* ]] ; then
+        cpidArr[$cpid]=$action
+      fi
+
+      # action contain UAString
+      if [[ ${action} == *"UAString"* ]] ; then
+        cpidUAArr[$cpid]=$action
+      fi
     fi
-    if ! IFS= read ; then
-        echo 'cpidArr length',${#cpidArr[@]}
-        for i in "${!cpidArr[@]}"
-        do
-          echo $i, ${cpidArr[$i]}
-        done
-    fi
-done
+
+  done
+
+  echo 'cpidArr length',${#cpidArr[@]}
+  echo 'cpidUAArr length',${#cpidUAArr[@]}
+  
+  for i in "${!cpidArr[@]}"
+  do
+    echo $i, ${cpidArr[$i]}, ${cpidUAArr[$i]} 
+  done
+} 
