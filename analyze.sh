@@ -33,6 +33,6 @@ gunzip -c data/syslog.gz | grep 'cm-accept tracking' | sed 's/^[^{]*{\([^{}]*\)}
   
   for i in "${!cpidArr[@]}"
   do
-    echo $i, ${cpidArr[$i]}, ${cpidUAArr[$i]} 
+    echo $i, ${cpidArr[$i]}, ${cpidUAArr[$i]}  >> 'output/vi_syslog.txt'
   done
 } 
