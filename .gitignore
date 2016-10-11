@@ -1,5 +1,6 @@
 bk_analyze.sh
 data/**
 output/**
+backup/**
 syslog.gz
 node_modules/**
